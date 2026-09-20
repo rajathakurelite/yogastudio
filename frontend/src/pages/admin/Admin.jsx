@@ -94,7 +94,10 @@ export default function AdminPage() {
             <Card key={u.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <p>{u.full_name}</p>
-                <p className="break-all text-sm text-sage">{u.email} · {u.roles}</p>
+                <p className="break-all text-sm text-sage">
+                  {u.email}
+                  {u.phone ? ` · ${u.phone}` : ""} · {u.roles}
+                </p>
               </div>
               <Button
                 variant="secondary"

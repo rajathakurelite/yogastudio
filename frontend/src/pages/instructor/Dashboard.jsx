@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 import { api } from "../../api/client";
 import { Button, Card, SectionTitle } from "../../components/ui";
 
 export default function InstructorDashboard() {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   useEffect(() => {
     api.get("/yoga/instructor/dashboard").then((r) => setData(r.data.data));
@@ -17,12 +19,16 @@ export default function InstructorDashboard() {
     ["Students", a.students],
     ["Completions", a.totalCompletions],
   ];
+  const displayName = user?.instructorDisplayName || user?.fullName || "Instructor";
   return (
     <div className="space-y-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-sage">Instructor</p>
-          <h1 className="font-serif text-3xl sm:text-4xl">Dashboard</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl">{displayName}</h1>
+          {user?.phone ? (
+            <p className="mt-1 text-sm text-sage">{user.phone}</p>
+          ) : null}
         </div>
         <Link to="/instructor/classes/create" className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto">Create Yoga Class</Button>

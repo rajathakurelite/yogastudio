@@ -10,6 +10,7 @@ function mapClass(row) {
     id: row.id,
     instructorUserId: row.instructor_user_id,
     instructorName: row.instructor_display_name,
+    instructorPhone: row.instructor_phone || null,
     title: row.title,
     description: row.description,
     durationMinutes: row.duration_minutes,
@@ -39,12 +40,14 @@ function mapClass(row) {
 const CLASS_SELECT = `
   SELECT c.*, s.name AS style_name, s.slug AS style_slug,
          g.name AS goal_name, g.slug AS goal_slug,
+         ip.phone AS instructor_phone,
          (SELECT a.storage_url FROM class_media_assets a
            WHERE a.class_id = c.id AND a.asset_type = 'THUMBNAIL' AND a.status = 'ready'
            ORDER BY a.id DESC LIMIT 1) AS thumbnail_url
   FROM yoga_classes c
   LEFT JOIN yoga_styles s ON s.id = c.style_id
   LEFT JOIN yoga_goals g ON g.id = c.goal_id
+  LEFT JOIN instructor_profiles ip ON ip.user_id = c.instructor_user_id
 `;
 
 async function assertClassAccess(classRow, user, { mutate = false } = {}) {

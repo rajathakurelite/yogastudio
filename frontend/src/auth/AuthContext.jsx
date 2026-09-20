@@ -32,6 +32,10 @@ export function AuthProvider({ children }) {
         setUser(data.data.user);
         return data.data.user;
       },
+      setUser(next) {
+        localStorage.setItem("yoga_user", JSON.stringify(next));
+        setUser(next);
+      },
       logout() {
         localStorage.removeItem("yoga_token");
         localStorage.removeItem("yoga_user");

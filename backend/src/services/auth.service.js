@@ -9,12 +9,14 @@ const { audit } = require("../utils/helpers");
 async function getUserWithRoles(userId) {
   const user = await queryOne(
     `SELECT u.id, u.email, u.full_name, u.locale, u.is_active,
+            ip.phone AS phone, ip.display_name AS instructor_display_name,
             GROUP_CONCAT(r.name) AS roles
      FROM users u
      LEFT JOIN user_roles ur ON ur.user_id = u.id
      LEFT JOIN roles r ON r.id = ur.role_id
+     LEFT JOIN instructor_profiles ip ON ip.user_id = u.id
      WHERE u.id = ?
-     GROUP BY u.id`,
+     GROUP BY u.id, ip.phone, ip.display_name`,
     [userId]
   );
   if (!user) return null;
@@ -24,6 +26,8 @@ async function getUserWithRoles(userId) {
     fullName: user.full_name,
     locale: user.locale,
     isActive: Boolean(user.is_active),
+    phone: user.phone || null,
+    instructorDisplayName: user.instructor_display_name || null,
     roles: (user.roles || "").split(",").filter(Boolean),
   };
 }
@@ -91,12 +95,24 @@ async function login({ email, password }) {
   return { token: signToken(user), user };
 }
 
-async function updateProfile(userId, { fullName, locale }) {
+async function updateProfile(userId, { fullName, locale, phone }) {
   await query("UPDATE users SET full_name = ?, locale = ? WHERE id = ?", [
     fullName,
     locale || "en",
     userId,
   ]);
+  if (phone !== undefined) {
+    const profile = await queryOne(
+      "SELECT id FROM instructor_profiles WHERE user_id = ?",
+      [userId]
+    );
+    if (profile) {
+      await query("UPDATE instructor_profiles SET phone = ? WHERE user_id = ?", [
+        phone || null,
+        userId,
+      ]);
+    }
+  }
   return getUserWithRoles(userId);
 }
 

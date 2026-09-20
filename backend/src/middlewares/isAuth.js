@@ -22,12 +22,14 @@ async function isAuth(req, res, next) {
     const userId = decoded.userId || decoded.id;
     const rows = await query(
       `SELECT u.id, u.email, u.full_name, u.is_active, u.locale,
+              ip.phone AS phone, ip.display_name AS instructor_display_name,
               GROUP_CONCAT(r.name) AS roles
        FROM users u
        LEFT JOIN user_roles ur ON ur.user_id = u.id
        LEFT JOIN roles r ON r.id = ur.role_id
+       LEFT JOIN instructor_profiles ip ON ip.user_id = u.id
        WHERE u.id = ?
-       GROUP BY u.id`,
+       GROUP BY u.id, ip.phone, ip.display_name`,
       [userId]
     );
     const user = rows[0];
@@ -41,6 +43,8 @@ async function isAuth(req, res, next) {
       email: user.email,
       fullName: user.full_name,
       locale: user.locale,
+      phone: user.phone || null,
+      instructorDisplayName: user.instructor_display_name || null,
       roles: (user.roles || "").split(",").filter(Boolean),
     };
     return next();

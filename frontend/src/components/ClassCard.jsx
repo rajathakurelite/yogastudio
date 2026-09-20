@@ -83,7 +83,10 @@ export default function ClassCard({ item, to }) {
         <h3 className="font-serif text-xl leading-snug group-hover:text-sage">
           {item.title || "Untitled class"}
         </h3>
-        <p className="text-sm text-sage">{item.instructorName}</p>
+        <p className="text-sm text-sage">
+          {item.instructorName}
+          {item.instructorPhone ? ` · ${item.instructorPhone}` : ""}
+        </p>
         {item.goalName ? (
           <p className="text-xs uppercase tracking-wider text-sage/70">{item.goalName}</p>
         ) : null}

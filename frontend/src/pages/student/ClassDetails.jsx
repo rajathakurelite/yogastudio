@@ -34,7 +34,10 @@ export default function ClassDetailsPage() {
           <Badge tone="clay">{c.styleName}</Badge>
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl">{c.title}</h1>
-        <p className="mt-2 text-sage">{c.instructorName}</p>
+        <p className="mt-2 text-sage">
+          {c.instructorName}
+          {c.instructorPhone ? ` · ${c.instructorPhone}` : ""}
+        </p>
         {c.thumbnailUrl ? (
           <img
             src={c.thumbnailUrl}

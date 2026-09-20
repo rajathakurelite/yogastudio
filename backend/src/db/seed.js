@@ -3,6 +3,7 @@ const { queryOne, withTransaction } = require("./pool");
 const configs = require("../configs");
 const POSES = require("../data/poseCatalog");
 const { upsertPoses } = require("./upsertPoses");
+const { upsertDemoInstructors } = require("./upsertDemoInstructors");
 const { seedMedia } = require("./seedMedia");
 
 const STYLES = [
@@ -33,6 +34,8 @@ const GOALS = [
 async function seed() {
   // Always expand/refresh the shared pose catalog (idempotent by slug).
   await upsertPoses();
+  // Always upsert demo instructors (idempotent by email).
+  await upsertDemoInstructors();
 
   const existing = await queryOne("SELECT id FROM users WHERE email = ?", [
     "admin@yogastudio.local",
@@ -215,6 +218,7 @@ async function seed() {
   console.log("Demo logins (password: DemoPass123!)");
   console.log("  admin@yogastudio.local");
   console.log("  instructor@yogastudio.local");
+  console.log("  lovely@yogastudio.local");
   console.log("  student@yogastudio.local");
 }
 

@@ -89,15 +89,18 @@ async function upsertTaxonomy(table, user, body) {
 
 async function listUsers(role) {
   const params = [];
-  let sql = `SELECT u.id, u.email, u.full_name, u.is_active, u.created_at, GROUP_CONCAT(r.name) AS roles
+  let sql = `SELECT u.id, u.email, u.full_name, u.is_active, u.created_at,
+                    ip.phone,
+                    GROUP_CONCAT(r.name) AS roles
              FROM users u
              LEFT JOIN user_roles ur ON ur.user_id = u.id
-             LEFT JOIN roles r ON r.id = ur.role_id`;
+             LEFT JOIN roles r ON r.id = ur.role_id
+             LEFT JOIN instructor_profiles ip ON ip.user_id = u.id`;
   if (role) {
     sql += ` WHERE u.id IN (SELECT user_id FROM user_roles ur2 JOIN roles r2 ON r2.id = ur2.role_id WHERE r2.name = ?)`;
     params.push(role);
   }
-  sql += " GROUP BY u.id ORDER BY u.created_at DESC";
+  sql += " GROUP BY u.id, ip.phone ORDER BY u.created_at DESC";
   return query(sql, params);
 }
 
