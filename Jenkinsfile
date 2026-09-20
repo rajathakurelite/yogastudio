@@ -1,0 +1,168 @@
+/*
+ * Yoga Studio — Jenkins Pipeline (Dockerized FE + BE)
+ *
+ * Domains / ports (override via Jenkins job env):
+ * - SPA:  yogastudio.airepro.in   → 127.0.0.1:2004
+ * - API:  yogastudio-s.airepro.in → 127.0.0.1:2005
+ *
+ * Prerequisites:
+ * - Docker on the agent. If jenkins is not in the docker group, set DOCKER='sudo docker'.
+ * - Backend secrets at SECRETS_FILE (default /home/airepro/.secrets/yogastudio.env)
+ *   Must include DATABASE_* , JWT_SECRET_KEY, and optional ANTHROPIC_API_KEY / FABLE_*.
+ * - Cloudflare Tunnel / edge proxy targeting localhost:2004 and localhost:2005.
+ */
+
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    environment {
+        DEPLOY_BRANCH       = "${env.DEPLOY_BRANCH ?: 'main'}"
+        FRONTEND_IMAGE      = "${env.FRONTEND_IMAGE ?: 'yogastudio-ui'}"
+        BACKEND_IMAGE       = "${env.BACKEND_IMAGE ?: 'yogastudio-api'}"
+        FRONTEND_CONTAINER  = "${env.FRONTEND_CONTAINER ?: 'yogastudio-ui'}"
+        BACKEND_CONTAINER   = "${env.BACKEND_CONTAINER ?: 'yogastudio-api'}"
+        FRONTEND_PORT       = "${env.FRONTEND_PORT ?: '2004'}"
+        BACKEND_PORT        = "${env.BACKEND_PORT ?: '2005'}"
+        DOMAIN              = "${env.DOMAIN ?: 'yogastudio.airepro.in'}"
+        BACKEND_DOMAIN      = "${env.BACKEND_DOMAIN ?: 'yogastudio-s.airepro.in'}"
+        VITE_API_BASE_URL   = "${env.VITE_API_BASE_URL ?: 'https://yogastudio-s.airepro.in/api/v1'}"
+        SECRETS_FILE        = "${env.SECRETS_FILE ?: '/home/airepro/.secrets/yogastudio.env'}"
+        MEDIA_VOLUME        = "${env.MEDIA_VOLUME ?: 'yogastudio-media'}"
+        DOCKER              = "${env.DOCKER ?: 'docker'}"
+        JENKINS_NODE_COOKIE = 'dontKillMe'
+        BUILD_ID            = 'dontKillMe'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${env.DEPLOY_BRANCH}"]],
+                    extensions: [],
+                    userRemoteConfigs: scm.userRemoteConfigs,
+                ])
+                sh 'git log -1 --oneline'
+            }
+        }
+
+        stage('Build backend image') {
+            steps {
+                sh '''
+                set -e
+                ${DOCKER} build \
+                  -t "${BACKEND_IMAGE}:${BUILD_NUMBER}" \
+                  -t "${BACKEND_IMAGE}:latest" \
+                  ./backend
+                '''
+            }
+        }
+
+        stage('Build frontend image') {
+            steps {
+                sh '''
+                set -e
+                ${DOCKER} build \
+                  --build-arg VITE_API_BASE_URL="${VITE_API_BASE_URL}" \
+                  -t "${FRONTEND_IMAGE}:${BUILD_NUMBER}" \
+                  -t "${FRONTEND_IMAGE}:latest" \
+                  ./frontend
+                '''
+            }
+        }
+
+        stage('Deploy backend') {
+            steps {
+                sh '''
+                set -e
+
+                if [ ! -f "${SECRETS_FILE}" ]; then
+                  echo "ERROR: secrets file missing: ${SECRETS_FILE}"
+                  echo "Create it with DATABASE_*, JWT_SECRET_KEY, APP_URL, FRONTEND_ORIGIN, MEDIA_PUBLIC_BASE_URL, etc."
+                  exit 1
+                fi
+
+                ${DOCKER} volume create "${MEDIA_VOLUME}" >/dev/null 2>&1 || true
+                ${DOCKER} rm -f "${BACKEND_CONTAINER}" >/dev/null 2>&1 || true
+
+                ${DOCKER} run -d \
+                  --name "${BACKEND_CONTAINER}" \
+                  --restart unless-stopped \
+                  --env-file "${SECRETS_FILE}" \
+                  -e API_PORT=2005 \
+                  -e APP_URL="https://${DOMAIN}" \
+                  -e FRONTEND_ORIGIN="https://${DOMAIN},http://${DOMAIN}:2004,http://localhost:2004" \
+                  -e MEDIA_PUBLIC_BASE_URL="https://${BACKEND_DOMAIN}/media" \
+                  -e MEDIA_STORAGE_DIR=./storage/media \
+                  -p "127.0.0.1:${BACKEND_PORT}:2005" \
+                  -v "${MEDIA_VOLUME}:/app/storage/media" \
+                  "${BACKEND_IMAGE}:${BUILD_NUMBER}"
+                '''
+            }
+        }
+
+        stage('Deploy frontend') {
+            steps {
+                sh '''
+                set -e
+                ${DOCKER} rm -f "${FRONTEND_CONTAINER}" >/dev/null 2>&1 || true
+                ${DOCKER} run -d \
+                  --name "${FRONTEND_CONTAINER}" \
+                  --restart unless-stopped \
+                  -p "127.0.0.1:${FRONTEND_PORT}:80" \
+                  "${FRONTEND_IMAGE}:${BUILD_NUMBER}"
+                '''
+            }
+        }
+
+        stage('Smoke test') {
+            steps {
+                sh '''
+                set -e
+
+                echo "Waiting for backend :${BACKEND_PORT} ..."
+                for i in $(seq 1 30); do
+                  if curl -fsS "http://127.0.0.1:${BACKEND_PORT}/health" >/dev/null 2>&1; then
+                    break
+                  fi
+                  [ "$i" = "30" ] && { ${DOCKER} logs --tail 80 "${BACKEND_CONTAINER}"; exit 1; }
+                  sleep 2
+                done
+                curl -fsS "http://127.0.0.1:${BACKEND_PORT}/health"
+                echo ""
+                curl -fsS -o /dev/null -w "api classes HTTP %{http_code}\\n" \
+                  "http://127.0.0.1:${BACKEND_PORT}/api/v1/yoga/classes?pageSize=1"
+
+                echo "Waiting for frontend :${FRONTEND_PORT} ..."
+                for i in $(seq 1 15); do
+                  if curl -fsS -o /dev/null "http://127.0.0.1:${FRONTEND_PORT}/"; then
+                    break
+                  fi
+                  [ "$i" = "15" ] && { ${DOCKER} logs --tail 50 "${FRONTEND_CONTAINER}"; exit 1; }
+                  sleep 2
+                done
+                curl -fsS -o /dev/null -w "frontend HTTP %{http_code}\\n" \
+                  -H "Host: ${DOMAIN}" "http://127.0.0.1:${FRONTEND_PORT}/"
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            sh '''
+            ${DOCKER} images "${BACKEND_IMAGE}" --format '{{.Tag}}' \
+              | grep -E '^[0-9]+$' | sort -rn | tail -n +4 \
+              | xargs -r -I{} ${DOCKER} rmi "${BACKEND_IMAGE}:{}" || true
+            ${DOCKER} images "${FRONTEND_IMAGE}" --format '{{.Tag}}' \
+              | grep -E '^[0-9]+$' | sort -rn | tail -n +4 \
+              | xargs -r -I{} ${DOCKER} rmi "${FRONTEND_IMAGE}:{}" || true
+            '''
+        }
+    }
+}
