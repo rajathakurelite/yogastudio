@@ -3,6 +3,7 @@ const path = require("path");
 const mysql = require("mysql2/promise");
 const configs = require("../configs");
 const { upsertPoses } = require("./upsertPoses");
+const { seedMedia } = require("./seedMedia");
 
 async function migrate() {
   const admin = await mysql.createConnection({
@@ -51,6 +52,8 @@ async function migrate() {
 
   // Expand pose catalog on already-seeded DBs (idempotent by slug).
   await upsertPoses();
+  // Ensure default SVG media exists for poses and class cards.
+  await seedMedia();
 }
 
 if (require.main === module) {

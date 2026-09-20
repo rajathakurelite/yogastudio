@@ -58,10 +58,9 @@ const configs = {
       "../../",
       envValue("MEDIA_STORAGE_DIR", "./storage/media")
     ),
-    publicBase: envValue(
-      "MEDIA_PUBLIC_BASE_URL",
-      "http://yogastudio-s.airepro.in:2005/media"
-    ),
+    // Path-absolute `/media` works via Vite proxy and same-origin nginx.
+    // Set an absolute URL only when the UI and API are on different hosts.
+    publicBase: envValue("MEDIA_PUBLIC_BASE_URL", "/media"),
   },
   fable: {
     apiKey: envValue("ANTHROPIC_API_KEY", "") || envValue("FABLE_API_KEY", ""),

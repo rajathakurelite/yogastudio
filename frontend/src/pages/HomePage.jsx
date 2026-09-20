@@ -273,7 +273,15 @@ export default function HomePage() {
           <div className="relative mx-auto w-full max-w-sm pb-28 sm:max-w-none sm:pb-16 lg:pb-8">
             <BreathingOrb />
             <Reveal delay={300} className="absolute bottom-0 left-1/2 w-[min(100%,300px)] -translate-x-1/2 sm:w-[340px]">
-              <div className="animate-float-slow rounded-2xl border border-sand/70 bg-white/90 p-4 shadow-soft backdrop-blur sm:rounded-3xl sm:p-5">
+              <div className="animate-float-slow overflow-hidden rounded-2xl border border-sand/70 bg-white/90 shadow-soft backdrop-blur sm:rounded-3xl">
+                {spotlight?.thumbnailUrl ? (
+                  <img
+                    src={spotlight.thumbnailUrl}
+                    alt=""
+                    className="h-28 w-full object-cover sm:h-32"
+                  />
+                ) : null}
+                <div className="p-4 sm:p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-clay">
                   Daily Yoga
                 </p>
@@ -302,6 +310,7 @@ export default function HomePage() {
                   <Link to="/register" className="shrink-0 text-xs font-semibold text-clay hover:underline">
                     Join →
                   </Link>
+                </div>
                 </div>
               </div>
             </Reveal>

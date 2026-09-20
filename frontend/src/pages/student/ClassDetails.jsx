@@ -35,12 +35,26 @@ export default function ClassDetailsPage() {
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl">{c.title}</h1>
         <p className="mt-2 text-sage">{c.instructorName}</p>
+        {c.thumbnailUrl ? (
+          <img
+            src={c.thumbnailUrl}
+            alt=""
+            className="mt-6 aspect-video w-full rounded-[1.5rem] object-cover shadow-soft"
+          />
+        ) : null}
         <p className="mt-6 leading-relaxed">{c.description}</p>
         <h2 className="mt-8 font-serif text-xl sm:mt-10 sm:text-2xl">What you&apos;ll practice</h2>
         <ol className="mt-4 space-y-2">
           {(data.sequence || []).map((item, i) => (
-            <li key={item.id} className="flex items-start justify-between gap-3 rounded-2xl bg-white px-3 py-3 sm:px-4">
-              <span className="min-w-0 text-sm sm:text-base">{i + 1}. {item.name}</span>
+            <li key={item.id} className="flex items-start gap-3 rounded-2xl bg-white px-3 py-3 sm:px-4">
+              {item.pose_image_url ? (
+                <img
+                  src={item.pose_image_url}
+                  alt=""
+                  className="h-12 w-12 shrink-0 rounded-xl object-cover bg-sage-mist"
+                />
+              ) : null}
+              <span className="min-w-0 flex-1 text-sm sm:text-base">{i + 1}. {item.name}</span>
               <span className="shrink-0 text-sm text-sage">{Math.round((item.duration_seconds || 0) / 60)} min</span>
             </li>
           ))}

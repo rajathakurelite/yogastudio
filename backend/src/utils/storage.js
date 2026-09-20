@@ -7,6 +7,12 @@ function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+/** Build a public media URL. Prefer path-absolute `/media/...` so Vite/nginx proxies work. */
+function publicMediaUrl(subdir, safeName) {
+  const base = String(configs.media.publicBase || "/media").replace(/\/$/, "");
+  return `${base}/${subdir}/${safeName}`;
+}
+
 function saveTextAsset(subdir, filename, contents, contentType = "image/svg+xml") {
   const folder = path.join(configs.media.dir, subdir);
   ensureDir(folder);
@@ -15,7 +21,7 @@ function saveTextAsset(subdir, filename, contents, contentType = "image/svg+xml"
   fs.writeFileSync(full, contents, "utf8");
   return {
     storagePath: full,
-    storageUrl: `${configs.media.publicBase}/${subdir}/${safeName}`,
+    storageUrl: publicMediaUrl(subdir, safeName),
     contentType,
   };
 }
@@ -28,7 +34,7 @@ function saveBinaryAsset(subdir, filename, buffer, contentType) {
   fs.writeFileSync(full, buffer);
   return {
     storagePath: full,
-    storageUrl: `${configs.media.publicBase}/${subdir}/${safeName}`,
+    storageUrl: publicMediaUrl(subdir, safeName),
     contentType,
   };
 }
@@ -56,4 +62,5 @@ module.exports = {
   saveBinaryAsset,
   newAssetFilename,
   sanitizeSvg,
+  publicMediaUrl,
 };

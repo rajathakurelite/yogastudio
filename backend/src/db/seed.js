@@ -3,6 +3,7 @@ const { queryOne, withTransaction } = require("./pool");
 const configs = require("../configs");
 const POSES = require("../data/poseCatalog");
 const { upsertPoses } = require("./upsertPoses");
+const { seedMedia } = require("./seedMedia");
 
 const STYLES = [
   ["hatha", "Hatha", "Steady alignment-focused practice"],
@@ -37,7 +38,8 @@ async function seed() {
     "admin@yogastudio.local",
   ]);
   if (existing) {
-    console.log("Seed already applied");
+    console.log("Seed already applied — refreshing media assets");
+    await seedMedia();
     return;
   }
 
@@ -205,6 +207,9 @@ async function seed() {
       [classId, instructorId]
     );
   });
+
+  // Always ensure pose images + class thumbnails exist (idempotent).
+  await seedMedia();
 
   console.log("Seed complete");
   console.log("Demo logins (password: DemoPass123!)");

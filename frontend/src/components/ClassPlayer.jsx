@@ -16,9 +16,21 @@ export default function ClassPlayer({
   const [phase, setPhase] = useState("practice");
   const current = items[index];
   const video = (assets || []).find((a) => a.asset_type === "VIDEO" && a.status === "ready");
-  const poseVisual = (assets || []).find(
-    (a) => a.asset_type === "POSE_IMAGE" && a.status === "ready"
-  );
+  const poseVisual =
+    (assets || []).find(
+      (a) =>
+        a.asset_type === "POSE_IMAGE" &&
+        a.status === "ready" &&
+        a.sequence_item_id === current?.id
+    ) ||
+    (assets || []).find(
+      (a) => a.asset_type === "POSE_IMAGE" && a.status === "ready" && !a.sequence_item_id
+    );
+  const poseImageUrl =
+    poseVisual?.storage_url ||
+    current?.pose_image_url ||
+    current?.poseImageUrl ||
+    null;
   const total = useMemo(
     () => items.reduce((s, i) => s + Number(i.duration_seconds || i.durationSeconds || 0), 0),
     [items]
@@ -93,8 +105,12 @@ export default function ClassPlayer({
             controls
             playsInline
           />
-        ) : poseVisual?.storage_url ? (
-          <img src={poseVisual.storage_url} alt="" className="aspect-square w-full object-contain bg-sage-mist" />
+        ) : poseImageUrl ? (
+          <img
+            src={poseImageUrl}
+            alt={current.name || "Pose"}
+            className="aspect-square w-full object-contain bg-sage-mist"
+          />
         ) : (
           <div className="flex aspect-[4/5] flex-col items-center justify-center p-6 text-center sm:p-8 md:aspect-video">
             <p className="text-xs uppercase tracking-[0.3em] text-sand">Current pose</p>
