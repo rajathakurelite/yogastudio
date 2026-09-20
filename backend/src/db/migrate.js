@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql2/promise");
 const configs = require("../configs");
+const { upsertPoses } = require("./upsertPoses");
 
 async function migrate() {
   const admin = await mysql.createConnection({
@@ -47,6 +48,9 @@ async function migrate() {
   }
 
   await admin.end();
+
+  // Expand pose catalog on already-seeded DBs (idempotent by slug).
+  await upsertPoses();
 }
 
 if (require.main === module) {
