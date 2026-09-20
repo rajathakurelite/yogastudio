@@ -16,51 +16,71 @@ function required(name, fallback) {
   return value;
 }
 
+/** Docker --env-file keeps quotes; dotenv strips them. Normalize both. */
+function envValue(name, fallback) {
+  let value = process.env[name];
+  if (value === undefined || value === "") return fallback;
+  value = String(value).trim();
+  if (
+    (value.startsWith("'") && value.endsWith("'")) ||
+    (value.startsWith('"') && value.endsWith('"'))
+  ) {
+    value = value.slice(1, -1);
+  }
+  return value;
+}
+
 const configs = {
   env: process.env.NODE_ENV || "development",
-  port: Number(process.env.API_PORT || 2005),
-  appName: process.env.APP_NAME || "Yoga Studio",
-  appUrl: process.env.APP_URL || "http://yogastudio.airepro.in:2004",
-  frontendOrigin:
-    process.env.FRONTEND_ORIGIN || "http://yogastudio.airepro.in:2004",
-  jwtSecret: required("JWT_SECRET_KEY", "dev-only-change-me-32-characters-min"),
-  jwtTimeout: process.env.JWT_TIMEOUT || "30d",
-  bcryptRounds: Number(process.env.BCRYPT_ROUNDS || 10),
+  port: Number(envValue("API_PORT", "2005")),
+  appName: envValue("APP_NAME", "Yoga Studio"),
+  appUrl: envValue("APP_URL", "http://yogastudio.airepro.in:2004"),
+  frontendOrigin: envValue(
+    "FRONTEND_ORIGIN",
+    "http://yogastudio.airepro.in:2004"
+  ),
+  jwtSecret: required(
+    "JWT_SECRET_KEY",
+    "dev-only-change-me-32-characters-min"
+  ),
+  jwtTimeout: envValue("JWT_TIMEOUT", "30d"),
+  bcryptRounds: Number(envValue("BCRYPT_ROUNDS", "10")),
   db: {
-    host: process.env.DATABASE_HOST || "127.0.0.1",
-    port: Number(process.env.DATABASE_PORT || 3307),
-    user: process.env.DATABASE_USERNAME || "yoga",
-    password: process.env.DATABASE_PASSWORD || "yoga",
-    database: process.env.DATABASE_NAME || "yoga_studio",
+    host: envValue("DATABASE_HOST", "127.0.0.1"),
+    port: Number(envValue("DATABASE_PORT", "3307")),
+    user: envValue("DATABASE_USERNAME", "yoga"),
+    password: envValue("DATABASE_PASSWORD", "yoga"),
+    database: envValue("DATABASE_NAME", "yoga_studio"),
   },
   media: {
     dir: path.resolve(
       __dirname,
       "../../",
-      process.env.MEDIA_STORAGE_DIR || "./storage/media"
+      envValue("MEDIA_STORAGE_DIR", "./storage/media")
     ),
-    publicBase:
-      process.env.MEDIA_PUBLIC_BASE_URL ||
-      "http://yogastudio-s.airepro.in:2005/media",
+    publicBase: envValue(
+      "MEDIA_PUBLIC_BASE_URL",
+      "http://yogastudio-s.airepro.in:2005/media"
+    ),
   },
   fable: {
-    apiKey: process.env.ANTHROPIC_API_KEY || process.env.FABLE_API_KEY || "",
-    baseUrl: process.env.FABLE_API_BASE_URL || "https://api.anthropic.com",
-    model: process.env.FABLE_MODEL || "claude-fable-5-1",
-    anthropicVersion: process.env.FABLE_ANTHROPIC_VERSION || "2023-06-01",
-    effort: process.env.FABLE_EFFORT || "medium",
-    maxTokens: Number(process.env.FABLE_MAX_TOKENS || 8192),
-    fallbackModel: process.env.FABLE_FALLBACK_MODEL || "",
+    apiKey: envValue("ANTHROPIC_API_KEY", "") || envValue("FABLE_API_KEY", ""),
+    baseUrl: envValue("FABLE_API_BASE_URL", "https://api.anthropic.com"),
+    model: envValue("FABLE_MODEL", "claude-fable-5-1"),
+    anthropicVersion: envValue("FABLE_ANTHROPIC_VERSION", "2023-06-01"),
+    effort: envValue("FABLE_EFFORT", "medium"),
+    maxTokens: Number(envValue("FABLE_MAX_TOKENS", "8192")),
+    fallbackModel: envValue("FABLE_FALLBACK_MODEL", ""),
   },
   jobs: {
-    pollMs: Number(process.env.GENERATION_POLL_MS || 1500),
-    maxRetries: Number(process.env.GENERATION_MAX_RETRIES || 3),
+    pollMs: Number(envValue("GENERATION_POLL_MS", "1500")),
+    maxRetries: Number(envValue("GENERATION_MAX_RETRIES", "3")),
   },
   rateLimit: {
-    generationMax: Number(process.env.GENERATION_RATE_LIMIT_MAX || 10),
-    authMax: Number(process.env.AUTH_RATE_LIMIT_MAX || 30),
+    generationMax: Number(envValue("GENERATION_RATE_LIMIT_MAX", "10")),
+    authMax: Number(envValue("AUTH_RATE_LIMIT_MAX", "30")),
   },
-  logLevel: process.env.LOG_LEVEL || "info",
+  logLevel: envValue("LOG_LEVEL", "info"),
 };
 
 module.exports = configs;
