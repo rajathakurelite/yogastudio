@@ -94,19 +94,8 @@ pipeline {
                 # Docker --env-file does NOT strip quotes (unlike Node dotenv).
                 # Normalize so DATABASE_PASSWORD='...' becomes DATABASE_PASSWORD=...
                 SECRETS_DOCKER="${WORKSPACE}/.jenkins-yogastudio.env"
-                awk -F= '
-                  /^[[:space:]]*#/ || NF < 2 { print; next }
-                  {
-                    key=$1
-                    val=substr($0, index($0,"=")+1)
-                    gsub(/^[[:space:]]+|[[:space:]]+$/, "", key)
-                    gsub(/^[[:space:]]+|[[:space:]]+$/, "", val)
-                    if ((val ~ /^".*"$/) || (val ~ /^'\''.*'\''$/)) {
-                      val=substr(val, 2, length(val)-2)
-                    }
-                    print key "=" val
-                  }
-                ' "${SECRETS_FILE}" > "${SECRETS_DOCKER}"
+                chmod +x "${WORKSPACE}/scripts/normalize-docker-env.sh"
+                "${WORKSPACE}/scripts/normalize-docker-env.sh" "${SECRETS_FILE}" "${SECRETS_DOCKER}"
                 chmod 600 "${SECRETS_DOCKER}"
 
                 if grep -qE "^DATABASE_PASSWORD=['\"]" "${SECRETS_FILE}"; then

@@ -1,0 +1,2 @@
+# Keep shell scripts LF so Jenkins/Linux dash/sh can parse them.
+*.sh text eol=lf
