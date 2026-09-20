@@ -9,6 +9,10 @@
  * - Docker on the agent. If jenkins is not in the docker group, set DOCKER='sudo docker'.
  * - Backend secrets at SECRETS_FILE (default /home/airepro/.secrets/yogastudio.env)
  *   Must include DATABASE_* , JWT_SECRET_KEY, and optional ANTHROPIC_API_KEY / FABLE_*.
+ * - DATABASE_PASSWORD must be UNQUOTED in the secrets file (Docker --env-file keeps quotes).
+ *   Example: DATABASE_PASSWORD=&P}Gk3eK,k{i5dTX
+ * - Whitelist the Jenkins egress IP in MySQL "Remote MySQL Access" on pole.hostitbro.com
+ *   (cPanel → Remote MySQL). The smoke stage prints the egress IP on failure.
  * - Cloudflare Tunnel / edge proxy targeting localhost:2004 and localhost:2005.
  */
 
@@ -87,13 +91,38 @@ pipeline {
                   exit 1
                 fi
 
+                # Docker --env-file does NOT strip quotes (unlike Node dotenv).
+                # Normalize so DATABASE_PASSWORD='...' becomes DATABASE_PASSWORD=...
+                SECRETS_DOCKER="${WORKSPACE}/.jenkins-yogastudio.env"
+                awk -F= '
+                  /^[[:space:]]*#/ || NF < 2 { print; next }
+                  {
+                    key=$1
+                    val=substr($0, index($0,"=")+1)
+                    gsub(/^[[:space:]]+|[[:space:]]+$/, "", key)
+                    gsub(/^[[:space:]]+|[[:space:]]+$/, "", val)
+                    if ((val ~ /^".*"$/) || (val ~ /^'\''.*'\''$/)) {
+                      val=substr(val, 2, length(val)-2)
+                    }
+                    print key "=" val
+                  }
+                ' "${SECRETS_FILE}" > "${SECRETS_DOCKER}"
+                chmod 600 "${SECRETS_DOCKER}"
+
+                if grep -qE "^DATABASE_PASSWORD=['\"]" "${SECRETS_FILE}"; then
+                  echo "NOTE: stripped quotes from DATABASE_PASSWORD for Docker env-file compatibility"
+                fi
+
+                EGRESS_IP="$(curl -fsS --max-time 5 https://api.ipify.org 2>/dev/null || true)"
+                echo "Jenkins egress IP (whitelist in MySQL Remote Access): ${EGRESS_IP:-unknown}"
+
                 ${DOCKER} volume create "${MEDIA_VOLUME}" >/dev/null 2>&1 || true
                 ${DOCKER} rm -f "${BACKEND_CONTAINER}" >/dev/null 2>&1 || true
 
                 ${DOCKER} run -d \
                   --name "${BACKEND_CONTAINER}" \
                   --restart unless-stopped \
-                  --env-file "${SECRETS_FILE}" \
+                  --env-file "${SECRETS_DOCKER}" \
                   -e API_PORT=2005 \
                   -e APP_URL="https://${DOMAIN}" \
                   -e FRONTEND_ORIGIN="https://${DOMAIN},http://${DOMAIN}:2004,http://localhost:2004" \
@@ -102,6 +131,8 @@ pipeline {
                   -p "127.0.0.1:${BACKEND_PORT}:2005" \
                   -v "${MEDIA_VOLUME}:/app/storage/media" \
                   "${BACKEND_IMAGE}:${BUILD_NUMBER}"
+
+                rm -f "${SECRETS_DOCKER}"
                 '''
             }
         }
@@ -126,11 +157,18 @@ pipeline {
                 set -e
 
                 echo "Waiting for backend :${BACKEND_PORT} ..."
-                for i in $(seq 1 30); do
+                for i in $(seq 1 45); do
                   if curl -fsS "http://127.0.0.1:${BACKEND_PORT}/health" >/dev/null 2>&1; then
                     break
                   fi
-                  [ "$i" = "30" ] && { ${DOCKER} logs --tail 80 "${BACKEND_CONTAINER}"; exit 1; }
+                  if [ "$i" = "45" ]; then
+                    echo "ERROR: backend never became healthy"
+                    EGRESS_IP="$(curl -fsS --max-time 5 https://api.ipify.org 2>/dev/null || true)"
+                    echo "Jenkins egress IP to whitelist in MySQL Remote Access: ${EGRESS_IP:-unknown}"
+                    echo "Also verify /home/airepro/.secrets/yogastudio.env has UNQUOTED DATABASE_PASSWORD"
+                    ${DOCKER} logs --tail 100 "${BACKEND_CONTAINER}" || true
+                    exit 1
+                  fi
                   sleep 2
                 done
                 curl -fsS "http://127.0.0.1:${BACKEND_PORT}/health"
