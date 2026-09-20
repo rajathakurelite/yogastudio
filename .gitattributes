@@ -1,2 +1,3 @@
-# Keep shell scripts LF so Jenkins/Linux dash/sh can parse them.
+# Shell/Jenkins must stay LF — dash rejects then\r ("expecting then").
 *.sh text eol=lf
+Jenkinsfile text eol=lf
