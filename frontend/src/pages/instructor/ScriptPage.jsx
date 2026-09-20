@@ -51,11 +51,11 @@ export default function ScriptPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between">
-        <h1 className="font-serif text-4xl">Script editor</h1>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => regenerate()}>Regenerate entire script</Button>
-          <Button onClick={save}>Save</Button>
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
+        <h1 className="font-serif text-3xl sm:text-4xl">Script editor</h1>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button variant="secondary" className="w-full sm:w-auto" onClick={() => regenerate()}>Regenerate entire script</Button>
+          <Button className="w-full sm:w-auto" onClick={save}>Save</Button>
         </div>
       </div>
       {(script.sections || []).map((section, index) => (

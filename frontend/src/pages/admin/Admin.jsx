@@ -49,17 +49,17 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="font-serif text-4xl">Admin</h1>
-      <div className="flex flex-wrap gap-2">
+      <h1 className="font-serif text-3xl sm:text-4xl">Admin</h1>
+      <div className="scroll-x-quiet -mx-4 flex gap-2 px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {["analytics", "classes", "users", "library", "generation"].map((t) => (
-          <Button key={t} variant={tab === t ? "primary" : "secondary"} onClick={() => setTab(t)}>
+          <Button key={t} variant={tab === t ? "primary" : "secondary"} className="shrink-0 capitalize" onClick={() => setTab(t)}>
             {t}
           </Button>
         ))}
       </div>
 
       {tab === "analytics" && analytics ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {Object.entries(analytics).map(([k, v]) => (
             <Card key={k}>
               <p className="text-xs uppercase tracking-wider text-sage">{k}</p>
@@ -72,12 +72,12 @@ export default function AdminPage() {
       {tab === "classes" ? (
         <div className="space-y-3">
           {classes.map((c) => (
-            <Card key={c.id} className="flex flex-wrap items-center justify-between gap-3">
-              <div>
+            <Card key={c.id} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+              <div className="min-w-0">
                 <p className="font-serif text-xl">{c.title}</p>
                 <p className="text-sm text-sage">{c.status} · {c.instructorName}</p>
               </div>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                 <Button variant="secondary" onClick={() => moderate(c.id, "approve")}>Approve</Button>
                 <Button variant="secondary" onClick={() => moderate(c.id, "publish")}>Publish</Button>
                 <Button variant="ghost" onClick={() => moderate(c.id, "unpublish")}>Unpublish</Button>
@@ -91,13 +91,14 @@ export default function AdminPage() {
       {tab === "users" ? (
         <div className="space-y-3">
           {users.map((u) => (
-            <Card key={u.id} className="flex justify-between">
-              <div>
+            <Card key={u.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
                 <p>{u.full_name}</p>
-                <p className="text-sm text-sage">{u.email} · {u.roles}</p>
+                <p className="break-all text-sm text-sage">{u.email} · {u.roles}</p>
               </div>
               <Button
                 variant="secondary"
+                className="w-full sm:w-auto"
                 onClick={() => api.patch(`/yoga/admin/users/${u.id}`, { isActive: !u.is_active }).then(load)}
               >
                 {u.is_active ? "Disable" : "Enable"}
@@ -170,9 +171,9 @@ function Library({ poses, onChange }) {
       </Card>
       <div className="space-y-2">
         {poses.map((p) => (
-          <Card key={p.id} className="flex justify-between">
-            <span>{p.name} <em className="text-sage">{p.sanskrit_name}</em></span>
-            <span className="text-xs">{p.category}</span>
+          <Card key={p.id} className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+            <span className="min-w-0">{p.name} <em className="text-sage">{p.sanskrit_name}</em></span>
+            <span className="shrink-0 text-xs">{p.category}</span>
           </Card>
         ))}
       </div>

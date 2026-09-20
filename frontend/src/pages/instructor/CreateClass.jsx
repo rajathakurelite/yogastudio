@@ -53,7 +53,7 @@ export default function CreateClassPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <p className="text-xs uppercase tracking-[0.3em] text-sage">Step 1</p>
-      <h1 className="font-serif text-4xl">Class information</h1>
+      <h1 className="font-serif text-3xl sm:text-4xl">Class information</h1>
       <Card>
         <form onSubmit={onSubmit} className="space-y-4">
           <Field label="Person / Instructor name">

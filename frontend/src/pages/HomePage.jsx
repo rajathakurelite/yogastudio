@@ -138,13 +138,13 @@ function Reveal({ children, className = "", delay = 0 }) {
 
 function BreathingOrb() {
   return (
-    <div className="pointer-events-none relative mx-auto flex h-72 w-72 items-center justify-center md:h-96 md:w-96">
+    <div className="pointer-events-none relative mx-auto flex h-56 w-56 items-center justify-center sm:h-72 sm:w-72 md:h-96 md:w-96">
       <div className="animate-breathe absolute inset-0 rounded-full bg-sage/15" />
       <div className="animate-breathe absolute inset-8 rounded-full bg-sage/20 [animation-delay:0.6s]" />
       <div className="animate-breathe-inner absolute inset-16 rounded-full bg-gradient-to-br from-sage-leaf/50 to-sage/30" />
       <svg
         viewBox="0 0 200 200"
-        className="relative z-10 h-40 w-40 text-sage-deep md:h-52 md:w-52"
+        className="relative z-10 h-28 w-28 text-sage-deep sm:h-40 sm:w-40 md:h-52 md:w-52"
         fill="none"
         stroke="currentColor"
         strokeWidth="3.5"
@@ -152,7 +152,6 @@ function BreathingOrb() {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        {/* Meditating figure, line-art */}
         <circle cx="100" cy="52" r="17" />
         <path d="M100 69 v28" />
         <path d="M100 82 C 72 88 58 106 50 124 M100 82 C 128 88 142 106 150 124" />
@@ -202,16 +201,16 @@ export default function HomePage() {
         <div className="pointer-events-none absolute -left-40 top-10 h-[480px] w-[480px] rounded-full bg-sage/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-32 top-64 h-[380px] w-[380px] rounded-full bg-clay/10 blur-3xl" />
 
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-16 pt-12 md:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-4">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 pb-20 pt-8 sm:gap-10 sm:pb-16 sm:pt-12 md:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-4">
           <div className="relative z-10">
             <Reveal>
-              <div className="inline-flex items-center gap-2 rounded-full border border-sand bg-white/70 px-4 py-1.5 text-xs text-sage-deep shadow-sm backdrop-blur">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-sage-leaf" />
-                Today&apos;s class is live — join in one tap
+              <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-sand bg-white/70 px-3 py-1.5 text-[11px] text-sage-deep shadow-sm backdrop-blur sm:px-4 sm:text-xs">
+                <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-sage-leaf" />
+                <span className="truncate">Today&apos;s class is live — join in one tap</span>
               </div>
             </Reveal>
             <Reveal delay={80}>
-              <h1 className="mt-6 font-serif text-5xl leading-[1.04] tracking-tight text-sage-deep md:text-7xl">
+              <h1 className="mt-5 font-serif text-4xl leading-[1.04] tracking-tight text-sage-deep sm:mt-6 sm:text-5xl md:text-7xl">
                 Move.
                 <br />
                 Breathe.
@@ -235,34 +234,34 @@ export default function HomePage() {
               </h1>
             </Reveal>
             <Reveal delay={160}>
-              <p className="mt-7 max-w-md text-lg leading-relaxed text-sage">
+              <p className="mt-5 max-w-md text-base leading-relaxed text-sage sm:mt-7 sm:text-lg">
                 A daily yoga practice designed to be effortless to start and hard to skip.
                 Real instructors, calm design, and honest wellness language.
               </p>
             </Reveal>
             <Reveal delay={240}>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Link to="/register">
-                  <Button className="px-8 py-3.5 text-base">
+              <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                <Link to="/register" className="w-full sm:w-auto">
+                  <Button className="w-full px-8 py-3.5 text-base sm:w-auto">
                     Join Today&apos;s Yoga
                     <span aria-hidden="true">→</span>
                   </Button>
                 </Link>
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-sage-deep underline decoration-sand decoration-2 underline-offset-8 transition hover:decoration-sage"
+                  className="text-center text-sm font-medium text-sage-deep underline decoration-sand decoration-2 underline-offset-8 transition hover:decoration-sage sm:text-left"
                 >
                   Explore classes
                 </Link>
               </div>
             </Reveal>
             <Reveal delay={320}>
-              <dl className="mt-12 grid max-w-md grid-cols-2 gap-x-8 gap-y-6 border-t border-sand pt-8 sm:grid-cols-4">
+              <dl className="mt-10 grid max-w-md grid-cols-2 gap-x-6 gap-y-5 border-t border-sand pt-6 sm:mt-12 sm:gap-x-8 sm:gap-y-6 sm:pt-8 sm:grid-cols-4">
                 {STATS.map((s) => (
                   <div key={s.label}>
                     <dt className="sr-only">{s.label}</dt>
-                    <dd className="font-serif text-2xl text-sage-deep">{s.value}</dd>
-                    <dd className="mt-1 text-[11px] uppercase tracking-wider text-sage">
+                    <dd className="font-serif text-xl text-sage-deep sm:text-2xl">{s.value}</dd>
+                    <dd className="mt-1 text-[10px] uppercase tracking-wider text-sage sm:text-[11px]">
                       {s.label}
                     </dd>
                   </div>
@@ -271,15 +270,14 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          <div className="relative">
+          <div className="relative mx-auto w-full max-w-sm pb-28 sm:max-w-none sm:pb-16 lg:pb-8">
             <BreathingOrb />
-            {/* Floating class card */}
-            <Reveal delay={300} className="absolute -bottom-4 left-1/2 w-[300px] -translate-x-1/2 sm:w-[340px]">
-              <div className="animate-float-slow rounded-3xl border border-sand/70 bg-white/90 p-5 shadow-soft backdrop-blur">
+            <Reveal delay={300} className="absolute bottom-0 left-1/2 w-[min(100%,300px)] -translate-x-1/2 sm:w-[340px]">
+              <div className="animate-float-slow rounded-2xl border border-sand/70 bg-white/90 p-4 shadow-soft backdrop-blur sm:rounded-3xl sm:p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-clay">
                   Daily Yoga
                 </p>
-                <p className="mt-2 font-serif text-xl text-sage-deep">
+                <p className="mt-2 font-serif text-lg text-sage-deep sm:text-xl">
                   {spotlight?.title || "Morning Balance Flow"}
                 </p>
                 <p className="mt-1 text-sm text-sage">
@@ -287,8 +285,8 @@ export default function HomePage() {
                   {spotlight?.durationMinutes || 30} min ·{" "}
                   <span className="capitalize">{spotlight?.level || "beginner"}</span>
                 </p>
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="flex -space-x-2">
+                <div className="mt-4 flex items-center justify-between gap-2">
+                  <div className="flex min-w-0 -space-x-2">
                     {["A", "M", "R"].map((ch) => (
                       <span
                         key={ch}
@@ -298,10 +296,10 @@ export default function HomePage() {
                       </span>
                     ))}
                     <span className="flex h-7 items-center rounded-full bg-sage-deep px-2.5 text-[10px] font-medium text-cream ring-2 ring-white">
-                      practicing now
+                      now
                     </span>
                   </div>
-                  <Link to="/register" className="text-xs font-semibold text-clay hover:underline">
+                  <Link to="/register" className="shrink-0 text-xs font-semibold text-clay hover:underline">
                     Join →
                   </Link>
                 </div>
@@ -331,7 +329,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- Daily ritual ---------------- */}
-      <section id="daily-yoga" className="px-4 py-24">
+      <section id="daily-yoga" className="px-4 py-14 sm:py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <SectionEyebrow>The daily ritual</SectionEyebrow>
@@ -357,7 +355,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- Featured classes ---------------- */}
-      <section id="classes" className="relative overflow-hidden bg-sage-deep px-4 py-24 text-cream">
+      <section id="classes" className="relative overflow-hidden bg-sage-deep px-4 py-14 text-cream sm:py-20 md:py-24">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-sage-leaf/10 blur-3xl" />
         <div className="mx-auto max-w-6xl">
           <Reveal>
@@ -410,7 +408,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- Goals ---------------- */}
-      <section className="px-4 py-24">
+      <section className="px-4 py-14 sm:py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <SectionEyebrow>Find your focus</SectionEyebrow>
@@ -438,7 +436,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- Instructors / AI ---------------- */}
-      <section id="how-it-works" className="border-y border-sand/70 bg-white/50 px-4 py-24">
+      <section id="how-it-works" className="border-y border-sand/70 bg-white/50 px-4 py-14 sm:py-20 md:py-24">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-2 lg:items-center">
           <Reveal>
             <SectionEyebrow>For instructors</SectionEyebrow>
@@ -516,7 +514,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- Testimonials ---------------- */}
-      <section className="px-4 py-24">
+      <section className="px-4 py-14 sm:py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <SectionEyebrow>Voices from the mat</SectionEyebrow>
@@ -546,7 +544,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- FAQ ---------------- */}
-      <section className="border-t border-sand/70 bg-white/50 px-4 py-24">
+      <section className="border-t border-sand/70 bg-white/50 px-4 py-14 sm:py-20 md:py-24">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
           <Reveal>
             <SectionEyebrow>Questions</SectionEyebrow>
@@ -596,27 +594,27 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- Final CTA ---------------- */}
-      <section id="instructors" className="px-4 py-24">
+      <section id="instructors" className="px-4 py-14 sm:py-20 md:py-24">
         <Reveal>
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[3rem] bg-sage-deep px-8 py-20 text-center text-cream md:px-16">
+            <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-sage-deep px-5 py-14 text-center text-cream sm:rounded-[3rem] sm:px-8 sm:py-20 md:px-16">
             <div className="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-sage-leaf/20 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-24 -right-16 h-80 w-80 rounded-full bg-clay/20 blur-3xl" />
             <p className="relative text-xs uppercase tracking-[0.4em] text-sand">Daily Yoga</p>
-            <h2 className="relative mx-auto mt-5 max-w-2xl font-serif text-4xl leading-tight md:text-6xl">
+            <h2 className="relative mx-auto mt-5 max-w-2xl font-serif text-3xl leading-tight sm:text-4xl md:text-6xl">
               Tomorrow morning, your class will be waiting.
             </h2>
-            <p className="relative mx-auto mt-5 max-w-md text-sand">
+            <p className="relative mx-auto mt-5 max-w-md text-sm text-sand sm:text-base">
               Free to join. One tap to practice. Built with care at{" "}
               <span className="text-cream">yogastudio.airepro.in</span>.
             </p>
-            <div className="relative mt-10 flex flex-wrap justify-center gap-4">
-              <Link to="/register">
-                <Button className="bg-cream px-9 py-3.5 text-base text-sage-deep hover:bg-white">
+            <div className="relative mt-8 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
+              <Link to="/register" className="w-full sm:w-auto">
+                <Button className="w-full bg-cream px-9 py-3.5 text-base text-sage-deep hover:bg-white sm:w-auto">
                   Start practicing free
                 </Button>
               </Link>
-              <Link to="/login">
-                <Button variant="ghost" className="text-cream hover:bg-white/10">
+              <Link to="/login" className="w-full sm:w-auto">
+                <Button variant="ghost" className="w-full text-cream hover:bg-white/10 sm:w-auto">
                   Sign in
                 </Button>
               </Link>

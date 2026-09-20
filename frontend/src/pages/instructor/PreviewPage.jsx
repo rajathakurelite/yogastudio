@@ -37,18 +37,18 @@ export default function PreviewPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between gap-4">
-        <h1 className="font-serif text-4xl">Preview</h1>
-        <Button onClick={publish}>Approve & Publish</Button>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-serif text-3xl sm:text-4xl">Preview</h1>
+        <Button className="w-full sm:w-auto" onClick={publish}>Approve & Publish</Button>
       </div>
       <ClassPlayer yogaClass={data.class} sequence={data.sequence} assets={data.assets} />
       <Card>
         <h2 className="font-serif text-2xl">Schedule</h2>
-        <form onSubmit={schedule} className="mt-4 flex flex-wrap gap-3">
+        <form onSubmit={schedule} className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
           <Field label="Start">
             <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required />
           </Field>
-          <Button type="submit" className="self-end">Schedule class</Button>
+          <Button type="submit" className="w-full sm:w-auto">Schedule class</Button>
         </form>
       </Card>
     </div>

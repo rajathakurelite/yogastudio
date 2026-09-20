@@ -32,9 +32,9 @@ export default function DailyYogaPage() {
     <div className="space-y-8">
       <div>
         <p className="text-xs uppercase tracking-[0.3em] text-sage">Today's Class</p>
-        <h1 className="mt-2 font-serif text-4xl md:text-5xl">{today.title}</h1>
+        <h1 className="mt-2 font-serif text-3xl sm:text-4xl md:text-5xl">{today.title}</h1>
       </div>
-      <Card className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
+      <Card className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
             <Badge>{today.level}</Badge>
@@ -49,12 +49,12 @@ export default function DailyYogaPage() {
           </p>
           <p className="leading-relaxed">{today.description}</p>
           {!joined ? (
-            <Button onClick={join}>Join Daily Yoga</Button>
+            <Button className="w-full sm:w-auto" onClick={join}>Join Daily Yoga</Button>
           ) : (
-            <Button onClick={() => navigate(`/classes/${today.id}/play`)}>Begin practice</Button>
+            <Button className="w-full sm:w-auto" onClick={() => navigate(`/classes/${today.id}/play`)}>Begin practice</Button>
           )}
         </div>
-        <div className="min-h-[220px] rounded-[2rem] bg-sage-mist" />
+        <div className="min-h-[160px] rounded-[1.5rem] bg-sage-mist sm:min-h-[220px] sm:rounded-[2rem]" />
       </Card>
 
       {joined ? (

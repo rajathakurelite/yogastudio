@@ -66,14 +66,14 @@ export default function ClassPlayer({
 
   if (phase === "complete") {
     return (
-      <div className="mx-auto max-w-xl rounded-[2rem] bg-white p-8 text-center shadow-soft">
+      <div className="mx-auto max-w-xl rounded-[1.75rem] bg-white p-6 text-center shadow-soft sm:rounded-[2rem] sm:p-8">
         <p className="text-xs uppercase tracking-[0.25em] text-sage">Class Complete</p>
-        <h2 className="mt-3 font-serif text-4xl">{yogaClass?.title}</h2>
+        <h2 className="mt-3 font-serif text-3xl sm:text-4xl">{yogaClass?.title}</h2>
         <p className="mt-2 text-sage">{yogaClass?.instructorName}</p>
         <p className="mt-6 text-sm">Duration completed · {yogaClass?.durationMinutes} min</p>
         <p className="text-sm text-sage">{new Date().toLocaleDateString()}</p>
         <div className="mt-8 flex justify-center">
-          <Button onClick={() => (window.location.href = "/classes")}>Explore another class</Button>
+          <Button className="w-full sm:w-auto" onClick={() => (window.location.href = "/classes")}>Explore another class</Button>
         </div>
       </div>
     );
@@ -96,9 +96,9 @@ export default function ClassPlayer({
         ) : poseVisual?.storage_url ? (
           <img src={poseVisual.storage_url} alt="" className="aspect-square w-full object-contain bg-sage-mist" />
         ) : (
-          <div className="flex aspect-[4/5] flex-col items-center justify-center p-8 text-center md:aspect-video">
+          <div className="flex aspect-[4/5] flex-col items-center justify-center p-6 text-center sm:p-8 md:aspect-video">
             <p className="text-xs uppercase tracking-[0.3em] text-sand">Current pose</p>
-            <h2 className="mt-4 font-serif text-4xl md:text-6xl">{current.name}</h2>
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl md:text-6xl">{current.name}</h2>
             {current.sanskrit_name || current.sanskritName ? (
               <p className="mt-2 italic text-sand">{current.sanskrit_name || current.sanskritName}</p>
             ) : null}
@@ -111,19 +111,19 @@ export default function ClassPlayer({
           style={{ width: `${Math.min(100, (elapsed / Math.max(total, 1)) * 100)}%` }}
         />
       </div>
-      <div className="flex items-center justify-between text-sm text-sage">
-        <span>{current.scene_label || current.item_type || current.itemType}</span>
-        <span>{remaining}s remaining</span>
+      <div className="flex items-center justify-between gap-3 text-sm text-sage">
+        <span className="min-w-0 truncate">{current.scene_label || current.item_type || current.itemType}</span>
+        <span className="shrink-0">{remaining}s remaining</span>
       </div>
-      <div className="rounded-[2rem] bg-white p-6 shadow-soft">
-        <h3 className="font-serif text-2xl">{current.name}</h3>
+      <div className="rounded-[1.75rem] bg-white p-4 shadow-soft sm:rounded-[2rem] sm:p-6">
+        <h3 className="font-serif text-xl sm:text-2xl">{current.name}</h3>
         <p className="mt-3 text-sm leading-relaxed">{current.instructions}</p>
         {current.breathing_guidance || current.breathingGuidance ? (
           <p className="mt-3 text-sm text-sage">
             Breath: {current.breathing_guidance || current.breathingGuidance}
           </p>
         ) : null}
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
           <Button onClick={() => setPlaying((v) => !v)}>{playing ? "Pause" : "Play"}</Button>
           <Button variant="secondary" onClick={() => setMuted((v) => !v)}>
             {muted ? "Unmute" : "Volume"}

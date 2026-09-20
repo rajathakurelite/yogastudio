@@ -12,7 +12,7 @@ export default function SchedulePage() {
   const upcoming = rows.filter((r) => new Date(r.starts_at) > new Date());
   return (
     <div className="space-y-8">
-      <h1 className="font-serif text-4xl">Schedule</h1>
+      <h1 className="font-serif text-3xl sm:text-4xl">Schedule</h1>
       <section>
         <h2 className="mb-3 font-serif text-2xl">Today</h2>
         {today.length ? today.map((r) => <Row key={r.id} r={r} />) : <p className="text-sage">No classes listed for today.</p>}
@@ -27,12 +27,12 @@ export default function SchedulePage() {
 
 function Row({ r }) {
   return (
-    <Card className="mb-3 flex items-center justify-between">
-      <div>
+    <Card className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
         <p className="font-serif text-xl">{r.title}</p>
         <p className="text-sm text-sage">{r.instructor_display_name} · {new Date(r.starts_at).toLocaleString()}</p>
       </div>
-      <Link to={`/classes/${r.class_id}`} className="text-sm underline">Join</Link>
+      <Link to={`/classes/${r.class_id}`} className="text-sm underline sm:shrink-0">Join</Link>
     </Card>
   );
 }

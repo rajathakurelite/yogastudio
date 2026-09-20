@@ -51,14 +51,14 @@ export default function SequenceEditor({ items, poses, onChange }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <p className="text-sm text-sage">Sequence · {items.length} items · ~{totalMin} min</p>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" onClick={() => add("pose")}>Add pose</Button>
-          <Button variant="secondary" onClick={() => add("breathing")}>Add breathing</Button>
-          <Button variant="secondary" onClick={() => add("rest")}>Add rest</Button>
-          <Button variant="secondary" onClick={() => add("transition")}>Add transition</Button>
-          <Button variant="ghost" onClick={() => add("note")}>Add note</Button>
+        <div className="scroll-x-quiet -mx-1 flex gap-2 px-1 sm:flex-wrap sm:overflow-visible">
+          <Button variant="secondary" className="shrink-0" onClick={() => add("pose")}>Add pose</Button>
+          <Button variant="secondary" className="shrink-0" onClick={() => add("breathing")}>Add breathing</Button>
+          <Button variant="secondary" className="shrink-0" onClick={() => add("rest")}>Add rest</Button>
+          <Button variant="secondary" className="shrink-0" onClick={() => add("transition")}>Add transition</Button>
+          <Button variant="ghost" className="shrink-0" onClick={() => add("note")}>Add note</Button>
         </div>
       </div>
       <DragDropContext onDragEnd={onDragEnd}>

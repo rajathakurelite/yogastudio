@@ -102,19 +102,19 @@ export default function ClassWorkspace() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.3em] text-sage">Step 2 · AI class plan</p>
-          <h1 className="font-serif text-4xl">{yogaClass.title || "Untitled class"}</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl">{yogaClass.title || "Untitled class"}</h1>
           <p className="text-sage">{yogaClass.instructorName} · {yogaClass.durationMinutes} min · {yogaClass.level}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" onClick={generatePlan} disabled={generating}>
+        <div className="scroll-x-quiet -mx-4 flex gap-2 px-4 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+          <Button variant="secondary" className="shrink-0" onClick={generatePlan} disabled={generating}>
             {generating ? "Generating…" : "Generate Class Plan"}
           </Button>
-          <Link to={`/instructor/classes/${id}/script`}><Button variant="secondary">Script</Button></Link>
-          <Link to={`/instructor/classes/${id}/media`}><Button variant="secondary">Media</Button></Link>
-          <Link to={`/instructor/classes/${id}/preview`}><Button variant="ghost">Preview</Button></Link>
+          <Link to={`/instructor/classes/${id}/script`} className="shrink-0"><Button variant="secondary">Script</Button></Link>
+          <Link to={`/instructor/classes/${id}/media`} className="shrink-0"><Button variant="secondary">Media</Button></Link>
+          <Link to={`/instructor/classes/${id}/preview`} className="shrink-0"><Button variant="ghost">Preview</Button></Link>
         </div>
       </div>
 

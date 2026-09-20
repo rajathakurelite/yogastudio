@@ -65,17 +65,17 @@ export default function MediaPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-end justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.3em] text-sage">Step 3 · Media</p>
-          <h1 className="font-serif text-4xl">Generate class media</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl">Generate class media</h1>
         </div>
         <Link to={`/instructor/classes/${id}/preview`} className="text-sm underline">Preview</Link>
       </div>
-      <Card className="flex flex-wrap gap-3">
-        <Button onClick={generateEverything}>Generate Everything</Button>
+      <Card className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <Button className="w-full sm:w-auto" onClick={generateEverything}>Generate Everything</Button>
         {MEDIA_ACTIONS.map((a) => (
-          <Button key={a.type} variant="secondary" onClick={() => setConfirmType(a.type)}>
+          <Button key={a.type} variant="secondary" className="w-full sm:w-auto" onClick={() => setConfirmType(a.type)}>
             {a.label}
           </Button>
         ))}

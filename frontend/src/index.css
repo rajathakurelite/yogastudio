@@ -6,17 +6,32 @@
   color-scheme: light;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 html,
 body,
 #root {
   min-height: 100%;
+  max-width: 100%;
 }
 
 body {
+  overflow-x: hidden;
+  touch-action: manipulation;
   background:
     radial-gradient(1200px 600px at 10% -10%, rgba(124, 154, 136, 0.18), transparent 55%),
     radial-gradient(900px 500px at 100% 0%, rgba(196, 107, 74, 0.08), transparent 40%),
     #f7f3ec;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
 }
 
 .yoga-grid {
@@ -24,6 +39,20 @@ body {
     linear-gradient(rgba(31, 58, 52, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(31, 58, 52, 0.04) 1px, transparent 1px);
   background-size: 48px 48px;
+}
+
+/* Hide scrollbars on chip / tab rows while keeping scroll */
+.scroll-x-quiet {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-x-quiet::-webkit-scrollbar {
+  display: none;
+}
+
+.safe-pb {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 
 /* ---- Homepage motion ---- */
@@ -112,5 +141,8 @@ body {
   }
   .reveal.is-visible {
     animation: none;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }

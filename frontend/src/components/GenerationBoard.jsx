@@ -33,8 +33,8 @@ export default function GenerationBoard({ jobs, onRetry, onCancel, capabilities 
           const cap = (capabilities || []).find((c) => c.assetType === step.type);
           const status = job?.status || (cap && !cap.available ? "UNAVAILABLE" : "PENDING");
           return (
-            <li key={step.type} className="flex items-start justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-sand">
-              <div>
+            <li key={step.type} className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-sand sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+              <div className="min-w-0">
                 <p className="font-medium">
                   <span className="mr-2 text-sage">{iconFor(status)}</span>
                   {step.label}

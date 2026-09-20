@@ -19,7 +19,7 @@ export function Button({
     <button
       type={type}
       className={clsx(
-        "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition disabled:opacity-50",
+        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition disabled:opacity-50",
         styles[variant],
         className
       )}
@@ -32,7 +32,12 @@ export function Button({
 
 export function Card({ children, className }) {
   return (
-    <div className={clsx("rounded-3xl bg-white/80 p-6 shadow-soft ring-1 ring-sand/80", className)}>
+    <div
+      className={clsx(
+        "rounded-2xl bg-white/80 p-4 shadow-soft ring-1 ring-sand/80 sm:rounded-3xl sm:p-6",
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -87,14 +92,14 @@ export function Select({ options, ...props }) {
 
 export function SectionTitle({ eyebrow, title, action }) {
   return (
-    <div className="mb-5 flex items-end justify-between gap-4">
-      <div>
+    <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+      <div className="min-w-0">
         {eyebrow ? (
           <p className="text-xs uppercase tracking-[0.2em] text-sage">{eyebrow}</p>
         ) : null}
-        <h2 className="font-serif text-2xl text-sage-deep">{title}</h2>
+        <h2 className="font-serif text-xl text-sage-deep sm:text-2xl">{title}</h2>
       </div>
-      {action}
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }

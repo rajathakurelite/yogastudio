@@ -15,20 +15,24 @@ export default function StudentHome() {
 
   return (
     <div className="space-y-12">
-      <section className="overflow-hidden rounded-[2.5rem] bg-sage-deep px-8 py-14 text-cream md:px-14">
+      <section className="overflow-hidden rounded-[1.75rem] bg-sage-deep px-5 py-10 text-cream sm:rounded-[2.5rem] sm:px-8 sm:py-14 md:px-14">
         <p className="text-xs uppercase tracking-[0.35em] text-sand">Daily Yoga</p>
-        <h1 className="mt-4 max-w-2xl font-serif text-4xl leading-tight md:text-6xl">
+        <h1 className="mt-4 max-w-2xl font-serif text-3xl leading-tight sm:text-4xl md:text-6xl">
           Start your day with movement, breath and balance.
         </h1>
-        <p className="mt-4 max-w-lg text-sand">
+        <p className="mt-4 max-w-lg text-sm text-sand sm:text-base">
           A simple daily practice. Open, join, and follow along — no complicated setup.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link to="/daily-yoga">
-            <Button className="bg-cream text-sage-deep hover:bg-white">Join Today's Yoga</Button>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link to="/daily-yoga" className="w-full sm:w-auto">
+            <Button className="w-full bg-cream text-sage-deep hover:bg-white sm:w-auto">
+              Join Today&apos;s Yoga
+            </Button>
           </Link>
-          <Link to="/classes">
-            <Button variant="secondary">Explore Classes</Button>
+          <Link to="/classes" className="w-full sm:w-auto">
+            <Button variant="secondary" className="w-full sm:w-auto">
+              Explore Classes
+            </Button>
           </Link>
         </div>
       </section>
@@ -55,14 +59,14 @@ export default function StudentHome() {
 
       <section>
         <SectionTitle title="Recommended" />
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
           {(data?.recommended || []).map((c) => <ClassCard key={c.id} item={c} />)}
         </div>
       </section>
 
       <section>
         <SectionTitle title="Popular classes" />
-        <div className="grid gap-5 md:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {(data?.popular || []).map((c) => <ClassCard key={c.id} item={c} />)}
         </div>
       </section>
@@ -72,12 +76,12 @@ export default function StudentHome() {
         {(data?.recentlyCompleted || []).length ? (
           <div className="grid gap-3">
             {data.recentlyCompleted.map((h) => (
-              <Card key={h.id} className="flex items-center justify-between">
-                <div>
+              <Card key={h.id} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
                   <p className="font-serif text-xl">{h.title}</p>
                   <p className="text-sm text-sage">{h.instructor_display_name}</p>
                 </div>
-                <p className="text-sm">{h.duration_minutes} min</p>
+                <p className="shrink-0 text-sm">{h.duration_minutes} min</p>
               </Card>
             ))}
           </div>
@@ -86,7 +90,7 @@ export default function StudentHome() {
         )}
       </section>
 
-      <section className="grid gap-6 md:grid-cols-3">
+      <section className="grid gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3">
         <Card>
           <SectionTitle title="By goal" />
           <div className="flex flex-wrap gap-2">

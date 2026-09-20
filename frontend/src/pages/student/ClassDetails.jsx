@@ -26,27 +26,27 @@ export default function ClassDetailsPage() {
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-[1.4fr_1fr]">
-      <div>
+    <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:gap-8">
+      <div className="min-w-0">
         <div className="mb-4 flex flex-wrap gap-2">
           <Badge>{c.level}</Badge>
           <Badge tone="sand">{c.durationMinutes} min</Badge>
           <Badge tone="clay">{c.styleName}</Badge>
         </div>
-        <h1 className="font-serif text-4xl">{c.title}</h1>
+        <h1 className="font-serif text-3xl sm:text-4xl">{c.title}</h1>
         <p className="mt-2 text-sage">{c.instructorName}</p>
         <p className="mt-6 leading-relaxed">{c.description}</p>
-        <h2 className="mt-10 font-serif text-2xl">What you'll practice</h2>
+        <h2 className="mt-8 font-serif text-xl sm:mt-10 sm:text-2xl">What you&apos;ll practice</h2>
         <ol className="mt-4 space-y-2">
           {(data.sequence || []).map((item, i) => (
-            <li key={item.id} className="flex justify-between rounded-2xl bg-white px-4 py-3">
-              <span>{i + 1}. {item.name}</span>
-              <span className="text-sm text-sage">{Math.round((item.duration_seconds || 0) / 60)} min</span>
+            <li key={item.id} className="flex items-start justify-between gap-3 rounded-2xl bg-white px-3 py-3 sm:px-4">
+              <span className="min-w-0 text-sm sm:text-base">{i + 1}. {item.name}</span>
+              <span className="shrink-0 text-sm text-sage">{Math.round((item.duration_seconds || 0) / 60)} min</span>
             </li>
           ))}
         </ol>
       </div>
-      <Card className="h-fit space-y-4">
+      <Card className="h-fit space-y-4 lg:sticky lg:top-24">
         <p className="text-sm text-sage">{c.goalName} · {c.language === "hi" ? "Hindi" : "English"}</p>
         <Button className="w-full" onClick={joinAndStart}>Join Class</Button>
         <Link to="/classes" className="block text-center text-sm underline">Back to explore</Link>

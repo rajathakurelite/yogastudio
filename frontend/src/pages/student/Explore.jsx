@@ -29,21 +29,33 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="space-y-8">
-      <h1 className="font-serif text-4xl">Explore classes</h1>
-      <div className="grid gap-3 md:grid-cols-6">
-        <Input
-          placeholder="Search"
-          defaultValue={params.get("q") || ""}
-          onBlur={(e) => set("q", e.target.value)}
-        />
-        <Select options={DURATIONS.map((d) => ({ id: d, label: `${d} min` }))} value={params.get("duration") || ""} onChange={(e) => set("duration", e.target.value)} />
-        <Select options={LEVELS} value={params.get("level") || ""} onChange={(e) => set("level", e.target.value)} />
-        <Select options={styles} value={params.get("styleId") || ""} onChange={(e) => set("styleId", e.target.value)} />
-        <Select options={goals} value={params.get("goalId") || ""} onChange={(e) => set("goalId", e.target.value)} />
-        <Select options={LANGUAGES} value={params.get("language") || ""} onChange={(e) => set("language", e.target.value)} />
+    <div className="space-y-6 sm:space-y-8">
+      <h1 className="font-serif text-3xl sm:text-4xl">Explore classes</h1>
+      <div className="scroll-x-quiet -mx-4 flex gap-3 px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 md:grid-cols-3 lg:grid-cols-6">
+        <div className="min-w-[11rem] shrink-0 sm:min-w-0">
+          <Input
+            placeholder="Search"
+            defaultValue={params.get("q") || ""}
+            onBlur={(e) => set("q", e.target.value)}
+          />
+        </div>
+        <div className="min-w-[9rem] shrink-0 sm:min-w-0">
+          <Select options={DURATIONS.map((d) => ({ id: d, label: `${d} min` }))} value={params.get("duration") || ""} onChange={(e) => set("duration", e.target.value)} />
+        </div>
+        <div className="min-w-[9rem] shrink-0 sm:min-w-0">
+          <Select options={LEVELS} value={params.get("level") || ""} onChange={(e) => set("level", e.target.value)} />
+        </div>
+        <div className="min-w-[9rem] shrink-0 sm:min-w-0">
+          <Select options={styles} value={params.get("styleId") || ""} onChange={(e) => set("styleId", e.target.value)} />
+        </div>
+        <div className="min-w-[9rem] shrink-0 sm:min-w-0">
+          <Select options={goals} value={params.get("goalId") || ""} onChange={(e) => set("goalId", e.target.value)} />
+        </div>
+        <div className="min-w-[9rem] shrink-0 sm:min-w-0">
+          <Select options={LANGUAGES} value={params.get("language") || ""} onChange={(e) => set("language", e.target.value)} />
+        </div>
       </div>
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {(result.items || []).map((c) => (
           <ClassCard key={c.id} item={c} />
         ))}
