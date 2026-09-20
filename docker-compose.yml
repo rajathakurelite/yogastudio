@@ -29,8 +29,9 @@ services:
     environment:
       DATABASE_HOST: mysql
       DATABASE_PORT: 3306
+      API_PORT: 2005
     ports:
-      - "8010:8010"
+      - "2005:2005"
     depends_on:
       mysql:
         condition: service_healthy
@@ -43,7 +44,7 @@ services:
     container_name: yoga-studio-ui
     restart: unless-stopped
     ports:
-      - "5174:80"
+      - "2004:80"
     depends_on:
       - backend
 

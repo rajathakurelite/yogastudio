@@ -18,10 +18,11 @@ function required(name, fallback) {
 
 const configs = {
   env: process.env.NODE_ENV || "development",
-  port: Number(process.env.API_PORT || 8010),
+  port: Number(process.env.API_PORT || 2005),
   appName: process.env.APP_NAME || "Yoga Studio",
-  appUrl: process.env.APP_URL || "http://localhost:5174",
-  frontendOrigin: process.env.FRONTEND_ORIGIN || "http://localhost:5174",
+  appUrl: process.env.APP_URL || "http://yogastudio.airepro.in:2004",
+  frontendOrigin:
+    process.env.FRONTEND_ORIGIN || "http://yogastudio.airepro.in:2004",
   jwtSecret: required("JWT_SECRET_KEY", "dev-only-change-me-32-characters-min"),
   jwtTimeout: process.env.JWT_TIMEOUT || "30d",
   bcryptRounds: Number(process.env.BCRYPT_ROUNDS || 10),
@@ -39,7 +40,8 @@ const configs = {
       process.env.MEDIA_STORAGE_DIR || "./storage/media"
     ),
     publicBase:
-      process.env.MEDIA_PUBLIC_BASE_URL || "http://localhost:8010/media",
+      process.env.MEDIA_PUBLIC_BASE_URL ||
+      "http://yogastudio-s.airepro.in:2005/media",
   },
   fable: {
     apiKey: process.env.ANTHROPIC_API_KEY || process.env.FABLE_API_KEY || "",
